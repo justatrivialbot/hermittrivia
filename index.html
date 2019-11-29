@@ -291,13 +291,15 @@
       }
 
       function saveToFirebase(username, gScore, timeElapsed, timeDeduction, nScore, wrong) {
+          var pushtime = Date.now();
           var entryObject = {
             reddituser: username,
             gross_score: gScore,
             total_time: timeElapsed,
             time_deduction: timeDeduction,
             net_score: nScore,
-            wrong_answers: wrong
+            wrong_answers: wrong,
+            time_submitted: pushtime
           }
 
           firebase.database().ref('quiz-entries').push().set(entryObject)
