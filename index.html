@@ -291,7 +291,8 @@
       }
 
       function saveToFirebase(username, gScore, timeElapsed, timeDeduction, nScore, wrong) {
-          var pushtime = Date.now();
+          var pushtimeUNIX = Date.now();
+          var pushtime = pushtimeUNIX.toUTCstring();
           var entryObject = {
             reddituser: username,
             gross_score: gScore,
