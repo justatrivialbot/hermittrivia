@@ -229,7 +229,7 @@
               }
               var stoptime = Date.now();
               var totalTime = Math.floor((stoptime - submittedAnswers['starttime'])/1000);
-              var timeAllowance = 5 * range.length;
+              var timeAllowance = 30 * range.length;
               var timePenalty = totalTime - timeAllowance;
               var timeDeduction = 0;
               var netScore = score;
