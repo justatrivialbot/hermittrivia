@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hermitcraft Trivia Round 1</title>
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <H1>Hermitcraft Trivia Quiz</h1>
+    <h2>Phase 1: Qualifying Round</h2>
+
+    <p>Answer the 10 questions below. You have 30 seconds per question before time
+      is deducted from your final score. The top 8 scoring contestants will continue
+      to the next round. Only your first submission will count.</p>
+
+    <p>Upon completion you will receive a passcode. Please comment on the quiz post
+      in the subreddit to verify that the username entered here matches with your
+      Reddit account.</p>
+
+    <!--Add buttons to initiate auth sequence and sign out-->
+    <form id='questions' name='questions' method='post' action="">
+      <input type="hidden" id="starttime" name="starttime" value="">
+      <p>Your Reddit Username: <input type="text" name="username"></p>
+      <ol id="questionlist"></ol>
+      <button type="submit" name="submit">Submit</button>
+    </form>
+
+    <div id="results" style="display:none;">
+    <p>Your original score was <span id="grossscore"></span> points.</p>
+    <p>You took <span id="timeelapsed"></span> seconds to complete the quiz for a deduction of <span id="timededuction"></span> points.</p>
+    <p>Your net score was <span id="netscore"></span> points.</p>
+    <p>Your passcode is: <strong><span id="tripcode"><span></strong></p>
+    <p>Please comment on the home post for this quiz with your passcode to verify that the username above matches your actual Reddit account.</p>
+    </div>
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-database.js"></script>
+
+    <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: "AIzaSyD6qyhNtbrgVk9AwQhIwKJqpJpSO-zeU9w",
+        authDomain: "hermit-quiz-1574943348100.firebaseapp.com",
+        databaseURL: "https://hermit-quiz-1574943348100.firebaseio.com",
+        projectId: "hermit-quiz-1574943348100",
+        storageBucket: "hermit-quiz-1574943348100.appspot.com",
+        messagingSenderId: "357090699749",
+        appId: "1:357090699749:web:5ac7190455daf309e6a70c"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+    </script>
+
+    <script type="text/javascript">
+      // Client ID and API key from the Developer Console
+      var CLIENT_ID = '357090699749-6gps4nk7oev8qv28m2v0qfmd0bmpqnho.apps.googleusercontent.com';
+      var API_KEY = 'AIzaSyAt5_ZDBTmf8LmagDg_Igb_oacrgMnJyDY';
+
+      // Array of API discovery doc URLs for APIs used by the quickstart
+      var DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
+
+      // Authorization scopes required by the API; multiple scopes can be
+      // included, separated by spaces.
+      var SCOPES = "https://www.googleapis.com/auth/spreadsheets";
+      /**
+       *  On load, called to load the auth2 library and API client library.
+       */
+      function handleClientLoad() {
+        gapi.load('client', initClient);
+      }
+
+      /**
+       *  Initializes the API client library and sets up sign-in state
+       *  listeners.
+       */
+      function initClient() {
+        gapi.client.init({
+          apiKey: API_KEY,
+          discoveryDocs: DISCOVERY_DOCS,
+          scope: SCOPES
+        }).then(function () {
+          prepForm();
+          listQuestions();
+        }, function(error) {
+          appendPre(JSON.stringify(error, null, 2));
+        });
+      }
+
+      /**
+       * Append a pre element to the body containing the given message
+       * as its text node. Used to display the results of the API call.
+       *
+       * @param {string} message Text to be placed in pre element.
+       */
+      function appendPre(message) {
+        var listitem = document.createElement('LI');
+        var textnode = document.createTextNode(message);
+        listitem.appendChild(textnode);
+        document.getElementById('questionlist').appendChild(listitem);
+      }
+
+      function appendTF(message,qindex) {
+        var listitem = document.createElement('LI');
+        htmlstring = "True or False: " + message + "<br>";
+        htmlstring += "<label for='"+qindex+"true'><input type='radio' id='"+qindex+"true' name='" + qindex + "' value='TRUE'>True </label> ";
+        htmlstring += "<label for='"+qindex+"false'><input type='radio' id='"+qindex+"false' name='" + qindex + "' value='FALSE'>False</label> ";
+        htmlstring += "<span id='verdict"+qindex+"'></span>"
+        listitem.innerHTML = htmlstring;
+        document.getElementById('questionlist').appendChild(listitem);
+      }
+
+      function appendMC(message,right,wrong,qindex){
+        var listitem = document.createElement('LI');
+        //split up the wrong items and trim spaces
+        var wrongs = wrong.split(',').map(item => item.trim());
+        var inputid;
+        wrongs.push(right);
+        wrongs = shuffle(wrongs);
+        //console.log(wrongs);
+        htmlstring = message + "<br>";
+        for (j = 0; j < wrongs.length; j++) {
+           inputid = qindex + j.toString();
+           htmlstring += "<label for='"+inputid+"'><input type='radio' id='"+inputid+"' name='"+qindex+"' value='"+wrongs[j]+"'>" + wrongs[j] + "</label> ";
+        }
+        htmlstring += " <span id='verdict"+qindex+"'></span>"
+        listitem.innerHTML = htmlstring;
+        document.getElementById('questionlist').appendChild(listitem);
+      }
+
+      function appendFITB(message,qindex) {
+        var listitem = document.createElement('LI');
+        htmlstring = message + "<br>";
+        htmlstring += "<input type='text' name='"+qindex+"' size='10'>";
+        htmlstring += "<span id='verdict"+qindex+"'></span>"
+        listitem.innerHTML = htmlstring;
+        document.getElementById('questionlist').appendChild(listitem);
+      }
+
+      /**
+       * Print the names and majors of students in a sample spreadsheet:
+       * https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
+       */
+      function listQuestions() {
+        gapi.client.sheets.spreadsheets.values.batchGet({
+          spreadsheetId: '1LYrTuVdXD1E20CI5tQ9vSU4OHlEAPBaNdnoaCL_t7JQ',
+          ranges: 'Q1!A2:E11',
+          valueRenderOption: 'FORMATTED_VALUE',
+          dateTimeRenderOption: 'FORMATTED_STRING'
+        }).then(function(response) {
+          var range = response.result.valueRanges[0].values;
+          var shuffledrange = shuffle(range);
+          //console.log(shuffledrange);
+          if (shuffledrange.length > 0) {
+            for (i = 0; i < shuffledrange.length; i++) {
+              // Print columns A and E, which correspond to indices 0 and 4.
+              if (shuffledrange[i][1] == 'TF') {
+                  appendTF(shuffledrange[i][2], shuffledrange[i][0]);
+              } else if (shuffledrange[i][1] == 'MC') {
+                  appendMC(shuffledrange[i][2], shuffledrange[i][3], shuffledrange[i][4], shuffledrange[i][0]);
+              } else {
+                  appendFITB(shuffledrange[i][2], shuffledrange[i][0]);
+              }
+
+            }
+          } else {
+            appendPre('No data found.');
+          }
+          var starttime = Date.now();
+          document.getElementById('starttime').value= starttime;
+        }, function(response) {
+          appendPre('Error: ' + response.result.error.message);
+        });
+      }
+
+      function shuffle(a) {
+          var j, x, i;
+          for (i = a.length - 1; i > 0; i--) {
+              j = Math.floor(Math.random() * (i + 1));
+              x = a[i];
+              a[i] = a[j];
+              a[j] = x;
+          }
+          return a;
+      }
+
+      function prepForm() { // form handling
+        var main_form = document.getElementById('questions');
+        main_form.addEventListener('submit', function(event) {
+          event.preventDefault();
+          checkAnswers();
+          getTripcode();
+          showResults();
+        }, false);
+      }
+
+      function checkAnswers() {
+          //retrieve the answers and question numbers.
+          gapi.client.sheets.spreadsheets.values.batchGet({
+            spreadsheetId: '1LYrTuVdXD1E20CI5tQ9vSU4OHlEAPBaNdnoaCL_t7JQ',
+            ranges: 'Q1!D2:D11',
+            valueRenderOption: 'FORMATTED_VALUE',
+            dateTimeRenderOption: 'FORMATTED_STRING'
+          }).then(function(response) {
+            var range = response.result.valueRanges[0].values;
+            if (range.length > 0) {
+              console.log(range[0]);
+              var submittedAnswers = getFormResults(document.getElementById('questions'));
+              console.log(submittedAnswers[1]);
+              var verdict;
+              var score = 0;
+              var wrong = [];
+              for (var i = 0; i < range.length; i++) {
+                var j = i+1;
+                var correct = String(range[i]);
+                var response = String(submittedAnswers[j]);
+                if (correct == response) {
+                  verdict = "Correct!";
+                  score = score + 5;
+                } else {
+                  verdict = "Incorrect, the answer was " + correct + ".";
+                  wrong.push(j);
+                }
+                var verdictSpan = document.getElementById('verdict'+j);
+                verdictSpan.textContent = verdict;
+              }
+              var stoptime = Date.now();
+              var totalTime = Math.floor((stoptime - submittedAnswers['starttime'])/1000);
+              var timeAllowance = 5 * range.length;
+              var timePenalty = totalTime - timeAllowance;
+              var timeDeduction = 0;
+              var netScore = score;
+              if (timePenalty > 0) {
+                timeDeduction = 2 * timePenalty;
+                netScore = score - timeDeduction;
+              }
+              var wronganswers = wrong.join(',');
+              var username = submittedAnswers['username'];
+              document.getElementById('grossscore').textContent = score;
+              document.getElementById('timeelapsed').textContent = totalTime;
+              document.getElementById('timededuction').textContent = timeDeduction;
+              document.getElementById('netscore').textContent = netScore;
+
+              saveToFirebase(username, score, totalTime, timeDeduction, netScore, wronganswers);
+
+            } else {
+              appendPre('No data found.');
+            }
+          }, function(response) {
+            appendPre('Error: ' + response.result.error.message);
+          });
+      }
+
+      function getTripcode() {
+        // generate 4 random numbers between 0 and 23
+        var seeds =[];
+        var seed;
+        for (var i = 0; i < 4; i++) {
+          seed = getRandomInt(0,23);
+          seeds.push(seed);
+        }
+        //console.log(seeds);
+
+        gapi.client.sheets.spreadsheets.values.batchGet({
+          spreadsheetId: '1LYrTuVdXD1E20CI5tQ9vSU4OHlEAPBaNdnoaCL_t7JQ',
+          ranges: 'Minecraft!A2:D24',
+          valueRenderOption: 'FORMATTED_VALUE',
+          dateTimeRenderOption: 'FORMATTED_STRING'
+        }).then(function(response) {
+          var range = response.result.valueRanges[0].values;
+          if (range.length > 0) {
+            //console.log(range);
+            var tripcode = [];
+            for (var i = 0; i < 4; i++) {
+              var word = range[seeds[i]][i];
+              tripcode.push(word);
+            }
+            shuffle(tripcode);
+            var tripcodeview = tripcode.join('');
+            document.getElementById('tripcode').textContent = tripcodeview;
+            //console.log(tripcode);
+          } else {
+            appendPre('No data found.');
+          }
+        }, function(response) {
+          appendPre('Error: ' + response.result.error.message);
+        });
+      }
+
+      function saveToFirebase(username, gScore, timeElapsed, timeDeduction, nScore, wrong) {
+          var entryObject = {
+            reddituser: username,
+            gross_score: gScore,
+            total_time: timeElapsed,
+            time_deduction: timeDeduction,
+            net_score: nScore,
+            wrong_answers: wrong
+          }
+
+          firebase.database().ref('quiz-entries').push().set(entryObject)
+            .then(function(snapshot) {
+              dbsuccess(); //
+            }, function(error) {
+              console.log('error ' + error);
+              dberror();
+            })
+      }
+
+      function showResults() {
+        var resDiv = document.getElementById("results");
+        resDiv.style.display = "block";
+      }
+
+      function getRandomInt(min,max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max-min)) + min;
+      }
+
+      function setOrPush(target, val) {
+        var result = val;
+        if (target) {
+          result = [target];
+          result.push(val);
+        }
+        return result;
+      }
+
+      function getFormResults(formElement) {
+        var formElements = formElement.elements;
+        var formParams = {};
+        var i = 0;
+        var elem = null;
+        for (i = 0; i < formElements.length; i += 1) {
+          elem = formElements[i];
+          switch (elem.type) {
+            case 'submit':
+              break;
+            case 'radio':
+              if (elem.checked) {
+                formParams[elem.name] = elem.value;
+              }
+              break;
+            case 'checkbox':
+              if (elem.checked) {
+                formParams[elem.name] = setOrPush(formParams[elem.name], elem.value);
+              }
+              break;
+            default:
+              formParams[elem.name] = setOrPush(formParams[elem.name], elem.value);
+          }
+        }
+        return formParams;
+      }
+
+      function dbsuccess() {
+
+      }
+
+      function dberror() {
+
+      }
+
+
+    </script>
+
+
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+  </body>
+</html>
