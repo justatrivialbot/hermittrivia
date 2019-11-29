@@ -191,9 +191,7 @@
         var main_form = document.getElementById('questions');
         main_form.addEventListener('submit', function(event) {
           event.preventDefault();
-          var tripcode = getTripcode();
-          checkAnswers(tripcode);
-          showResults();
+          getTripcode();
         }, false);
       }
 
@@ -209,9 +207,9 @@
           }).then(function(response) {
             var range = response.result.valueRanges[0].values;
             if (range.length > 0) {
-              console.log(range[0]);
+              //console.log(range[0]);
               var submittedAnswers = getFormResults(document.getElementById('questions'));
-              console.log(submittedAnswers[1]);
+              //console.log(submittedAnswers[1]);
               var verdict;
               var score = 0;
               var wrong = [];
@@ -246,7 +244,8 @@
               document.getElementById('timededuction').textContent = timeDeduction;
               document.getElementById('netscore').textContent = netScore;
 
-              saveToFirebase(username, score, totalTime, timeDeduction, netScore, wronganswers,tripcode);
+              saveToFirebase(username, score, totalTime, timeDeduction, netScore, wronganswers, tripcode);
+              showResults();
 
             } else {
               appendPre('No data found.');
@@ -284,7 +283,7 @@
             var tripcodeview = tripcode.join('');
             document.getElementById('tripcode').textContent = tripcodeview;
             //console.log(tripcode);
-            return tripcodeview;
+            checkAnswers(tripcodeview);
           } else {
             appendPre('No data found.');
           }
