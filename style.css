@@ -1,0 +1,151 @@
+@import url('https://fonts.googleapis.com/css?family=Nunito&display=swap');
+
+body, .wrapper {
+  font-family: 'Nunito', sans-serif;
+  margin: 0;
+  font-size: 22px;
+}
+
+.wrapper {
+  margin-top: 50px;
+}
+
+h1 {
+  background-color: #ff9533;
+  display: block;
+  width: 100%;
+  margin: 0 auto;
+  font-size: 35px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+
+h2 {
+  font-size: 30px;
+}
+ol {
+  padding-left: 0px;
+}
+
+ol li {
+  border-bottom: 1px solid black;
+  list-style-position: inside;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+}
+
+input[type=text] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  background-color: #ffeddb;
+  font-size: 22px;
+}
+
+.radiocontainer {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-top: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  z-index: 1;
+}
+
+.radiocontainer input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+  border-radius: 50%;
+}
+
+.radiocontainer:hover input ~ .checkmark {
+  background-color: #ffeddb;
+}
+
+.radiocontainer input:checked ~ .checkmark {
+  background-color: #ff9533;
+}
+
+.checkmark:after {
+  content:"";
+  position: absolute;
+  display: none;
+}
+
+.radiocontainer input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.radiocontainer .checkmark:after {
+  top:9px;
+  left: 9px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
+}
+
+button[type=submit] {
+  width: 100%;
+  border: none;
+  font-size: 22px;
+  text-align: center;
+  text-decoration: none;
+  background-color: #ff9533;
+  color: white;
+  padding: 12px 20px;
+}
+
+button[disabled=disabled], button:disabled {
+  background-color: #ccc;
+  text-decoration: line-through;
+}
+
+.verdict {
+  display: block;
+  margin-top:15px;
+  font-weight: bold;
+}
+
+.correctverdict {
+  color: #2fad35;
+}
+
+.incorrectverdict {
+  color: #a82828;
+}
+
+/* large screens */
+@media screen and (min-width: 900px) {
+  body {
+    background-image: url('bgleft.png'), url('bgright.png');
+    background-position: left 40px, right 40px;
+    background-repeat: no-repeat, no-repeat;
+    background-size: contain, contain;
+    background-attachment: fixed, fixed;
+  }
+
+  .wrapper {
+    width: 50%;
+    margin: 50px auto;
+  }
+}

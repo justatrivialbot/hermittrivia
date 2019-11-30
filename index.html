@@ -3,25 +3,30 @@
   <head>
     <title>Hermitcraft Trivia Round 1</title>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
   </head>
   <body>
     <H1>Hermitcraft Trivia Quiz</h1>
+    <div class="wrapper">
     <h2>Phase 1: Qualifying Round</h2>
 
-    <p>Answer the 10 questions below. You have 30 seconds per question before time
-      is deducted from your final score. The top 8 scoring contestants will continue
+    <p>Answer the 10 questions below.</p>
+    <p>You have 30 seconds per question before time
+      is deducted from your final score.</p>
+    <p>The top 8 scoring contestants will continue
       to the next round. Only your first submission will count.</p>
-
-    <p>Upon completion you will receive a passcode. Please comment on the quiz post
-      in the subreddit to verify that the username entered here matches with your
-      Reddit account.</p>
+    <p>Upon completion you will receive a passcode along with your score at the bottom of the page.
+      Please comment on the quiz post in the subreddit to verify that the username
+      entered here matches with your Reddit account.</p>
 
     <!--Add buttons to initiate auth sequence and sign out-->
     <form id='questions' name='questions' method='post' action="">
       <input type="hidden" id="starttime" name="starttime" value="">
-      <p>Your Reddit Username: <input type="text" name="username"></p>
+      <p><label for="username">Your Reddit Username:</label><br>
+        <input type="text" id="username" name="username"></p>
       <ol id="questionlist"></ol>
-      <button type="submit" name="submit">Submit</button>
+      <button id="submit" type="submit" name="submit">Submit</button>
     </form>
 
     <div id="results" style="display:none;">
@@ -31,7 +36,7 @@
     <p>Your passcode is: <strong><span id="tripcode"><span></strong></p>
     <p>Please comment on the home post for this quiz with your passcode to verify that the username above matches your actual Reddit account.</p>
     </div>
-
+  </div>
     <!-- The core Firebase JS SDK is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
 
@@ -106,9 +111,9 @@
       function appendTF(message,qindex) {
         var listitem = document.createElement('LI');
         htmlstring = "True or False: " + message + "<br>";
-        htmlstring += "<label for='"+qindex+"true'><input type='radio' id='"+qindex+"true' name='" + qindex + "' value='TRUE'>True </label> ";
-        htmlstring += "<label for='"+qindex+"false'><input type='radio' id='"+qindex+"false' name='" + qindex + "' value='FALSE'>False</label> ";
-        htmlstring += "<span id='verdict"+qindex+"'></span>"
+        htmlstring += "<label class='radiocontainer' for='"+qindex+"true'>True<input type='radio' id='"+qindex+"true' name='" + qindex + "' value='TRUE'><span class='checkmark'></span></label>";
+        htmlstring += "<label class='radiocontainer' for='"+qindex+"false'>False<input type='radio' id='"+qindex+"false' name='" + qindex + "' value='FALSE'><span class='checkmark'></span></label> ";
+        htmlstring += "<span class='verdict' id='verdict"+qindex+"'></span>"
         listitem.innerHTML = htmlstring;
         document.getElementById('questionlist').appendChild(listitem);
       }
@@ -124,9 +129,9 @@
         htmlstring = message + "<br>";
         for (j = 0; j < wrongs.length; j++) {
            inputid = qindex + j.toString();
-           htmlstring += "<label for='"+inputid+"'><input type='radio' id='"+inputid+"' name='"+qindex+"' value='"+wrongs[j]+"'>" + wrongs[j] + "</label> ";
+           htmlstring += "<label class='radiocontainer' for='"+inputid+"'>" + wrongs[j] + "<input type='radio' id='"+inputid+"' name='"+qindex+"' value='"+wrongs[j]+"'><span class='checkmark'></span></label>";
         }
-        htmlstring += " <span id='verdict"+qindex+"'></span>"
+        htmlstring += " <span class='verdict' id='verdict"+qindex+"'></span>"
         listitem.innerHTML = htmlstring;
         document.getElementById('questionlist').appendChild(listitem);
       }
@@ -135,7 +140,7 @@
         var listitem = document.createElement('LI');
         htmlstring = message + "<br>";
         htmlstring += "<input type='text' name='"+qindex+"' size='10'>";
-        htmlstring += "<span id='verdict"+qindex+"'></span>"
+        htmlstring += "<span class='verdict' id='verdict"+qindex+"'></span>"
         listitem.innerHTML = htmlstring;
         document.getElementById('questionlist').appendChild(listitem);
       }
@@ -191,6 +196,7 @@
         var main_form = document.getElementById('questions');
         main_form.addEventListener('submit', function(event) {
           event.preventDefault();
+          document.getElementById("submit").disabled = true;
           getTripcode();
         }, false);
       }
@@ -217,14 +223,17 @@
                 var j = i+1;
                 var correct = String(range[i]);
                 var response = String(submittedAnswers[j]);
+                var verdictSpan = document.getElementById('verdict'+j);
                 if (correct == response) {
                   verdict = "Correct!";
+                  verdictSpan.className += " correctverdict"
                   score = score + 5;
                 } else {
                   verdict = "Incorrect, the answer was " + correct + ".";
+                  verdictSpan.className += " incorrectverdict"
                   wrong.push(j);
                 }
-                var verdictSpan = document.getElementById('verdict'+j);
+
                 verdictSpan.textContent = verdict;
               }
               var stoptime = Date.now();
@@ -318,6 +327,9 @@
       function showResults() {
         var resDiv = document.getElementById("results");
         resDiv.style.display = "block";
+        if (window.innerHeight < document.body.clientHeight){
+            window.scrollBy(0,400);
+        }
       }
 
       function getRandomInt(min,max) {
