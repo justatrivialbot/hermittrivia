@@ -141,7 +141,7 @@ button[disabled=disabled], button:disabled {
 }
 
 /* large screens */
-@media screen and (min-width: 900px) {
+@media screen and (min-width: 1200px) {
   body {
     background-image: url('bgleft.png'), url('bgright.png');
     background-position: left 40px, right 40px;
