@@ -134,6 +134,10 @@ button[disabled=disabled], button:disabled {
   color: #a82828;
 }
 
+#footer {
+  text-align: center;
+}
+
 /* large screens */
 @media screen and (min-width: 900px) {
   body {
