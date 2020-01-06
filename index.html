@@ -226,8 +226,8 @@
               var wrong = [];
               for (var i = 0; i < range.length; i++) {
                 var j = i+1;
-                var correct = String(range[i]);
-                var response = String(submittedAnswers[j]);
+                var correct = String(range[i]).toLowerCase();
+                var response = String(submittedAnswers[j]).toLowerCase();
                 var verdictSpan = document.getElementById('verdict'+j);
                 if (correct == response) {
                   verdict = "Correct!";
