@@ -145,7 +145,7 @@
       function appendFITB(message,qindex) {
         var listitem = document.createElement('LI');
         htmlstring = message + "<br>";
-        htmlstring += "<input type='text' name='"+qindex+"' size='10'>";
+        htmlstring += "<input type='text' autocapitalize='off' name='"+qindex+"' size='10'>";
         htmlstring += "<span class='verdict' id='verdict"+qindex+"'></span>"
         listitem.innerHTML = htmlstring;
         document.getElementById('questionlist').appendChild(listitem);
