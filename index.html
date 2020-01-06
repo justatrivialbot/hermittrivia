@@ -219,23 +219,27 @@
           }).then(function(response) {
             var range = response.result.valueRanges[0].values;
             if (range.length > 0) {
-              console.log(range[0]);
+              //console.log(range[0]);
               var submittedAnswers = getFormResults(document.getElementById('questions'));
-              console.log(submittedAnswers[1]);
+              //console.log(submittedAnswers[1]);
               var verdict;
               var score = 0;
               var wrong = [];
               for (var i = 0; i < range.length; i++) {
                 var j = i+1;
-                var correct = String(range[i]).toLowerCase();
-                var response = String(submittedAnswers[j]).toLowerCase();
+                var correct = String(range[i]);
+                var response = String(submittedAnswers[j]);
                 var verdictSpan = document.getElementById('verdict'+j);
-                if (correct == response) {
+
+                var c2l = correct.toLowerCase();
+                var r2l = response.toLowerCase();
+
+                if (c2l == r2l) {
                   verdict = "Correct!";
                   verdictSpan.className += " correctverdict"
                   score = score + 5;
                 } else {
-                  verdict = "Incorrect, the answer was " + correct + " and you provided "+response+".";
+                  verdict = "Incorrect, the answer was " + c2l + " and you provided "+r2l+".";
                   verdictSpan.className += " incorrectverdict"
                   wrong.push(j);
                 }
