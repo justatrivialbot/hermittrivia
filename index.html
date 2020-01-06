@@ -15,7 +15,7 @@
     <p>If a Hermit name is required, use their full name. (e.g., GoodTimesWithScar instead of Scar)</p>
     <p>Capitalization does not matter.</p>
     <p>You have 30 seconds per question before time
-      is deducted from your final score.</p>
+      is deducted from your final score. Question order is randomized on reload.</p>
     <!-- Removed until tournament begins. -->
     <!--<p>The top 8 scoring contestants will continue
       to the next round. Only your first submission will count.</p>
@@ -202,8 +202,7 @@
         main_form.addEventListener('submit', function(event) {
           event.preventDefault();
           document.getElementById("submit").disabled = true;
-          //uncomment next line for tournament mode.
-          //getTripcode();
+          getTripcode();
         }, false);
       }
 
@@ -253,7 +252,8 @@
                 netScore = score - timeDeduction;
               }
               var wronganswers = wrong.join(',');
-              var username = submittedAnswers['username'];
+              //uncomment following line for tourney mode.
+              //var username = submittedAnswers['username'];
               document.getElementById('grossscore').textContent = score;
               document.getElementById('timeelapsed').textContent = totalTime;
               document.getElementById('timededuction').textContent = timeDeduction;
@@ -272,8 +272,11 @@
       }
 
       function getTripcode() {
+
+        //Replace this line with the commented section once tournament mode begins.
+        checkAnswers("foo");
         // generate 4 random numbers between 0 and 23
-        var seeds =[];
+        /*var seeds =[];
         var seed;
         for (var i = 0; i < 4; i++) {
           seed = getRandomInt(0,23);
@@ -306,6 +309,7 @@
         }, function(response) {
           appendPre('Error: ' + response.result.error.message);
         });
+        */
       }
 
       function saveToFirebase(username, gScore, timeElapsed, timeDeduction, nScore, wrong,tripcode) {
