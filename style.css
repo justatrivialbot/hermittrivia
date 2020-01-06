@@ -136,6 +136,8 @@ button[disabled=disabled], button:disabled {
 
 #footer {
   text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
 }
 
 /* large screens */
