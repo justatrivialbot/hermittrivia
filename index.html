@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Hermitcraft Trivia Round 1</title>
+    <title>Hermitcraft Trivia Week 1</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="style.css">
@@ -9,16 +9,17 @@
   <body>
     <H1>Hermitcraft Trivia Quiz</h1>
     <div class="wrapper">
-    <h2>Phase 1: Qualifying Round</h2>
+    <h2>Week 1: General Trivia</h2>
 
     <p>Answer the 10 questions below.</p>
     <p>You have 30 seconds per question before time
       is deducted from your final score.</p>
-    <p>The top 8 scoring contestants will continue
+    <!-- Removed until tournament begins. -->
+    <!--<p>The top 8 scoring contestants will continue
       to the next round. Only your first submission will count.</p>
     <p>Upon completion you will receive a passcode along with your score at the bottom of the page.
       Please comment on the quiz post in the subreddit to verify that the username
-      entered here matches with your Reddit account.</p>
+      entered here matches with your Reddit account.</p>-->
 
     <!--Add buttons to initiate auth sequence and sign out-->
     <form id='questions' name='questions' method='post' action="">
@@ -33,16 +34,18 @@
     <p>Your original score was <span id="grossscore"></span> points.</p>
     <p>You took <span id="timeelapsed"></span> seconds to complete the quiz for a deduction of <span id="timededuction"></span> points.</p>
     <p>Your net score was <span id="netscore"></span> points.</p>
-    <p>Your passcode is: <strong><span id="tripcode"><span></strong></p>
-    <p>Please comment on the home post for this quiz with your passcode to verify that the username above matches your actual Reddit account.</p>
+    <!-- removed until start of tournament mode-->
+    <!--<p>Your passcode is: <strong><span id="tripcode"><span></strong></p>
+    <p>Please comment on the home post for this quiz with your passcode to verify that the username above matches your actual Reddit account.</p>-->
     </div>
   </div>
+    <!-- firebase code removed until start of tournament mode.-->
     <!-- The core Firebase JS SDK is always required and must be listed first -->
-    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
+    <!--<script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>-->
 
     <!-- TODO: Add SDKs for Firebase products that you want to use
          https://firebase.google.com/docs/web/setup#available-libraries -->
-    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-auth.js"></script>
+    <!-- <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-database.js"></script>
 
     <script>
@@ -58,7 +61,7 @@
       };
       // Initialize Firebase
       firebase.initializeApp(firebaseConfig);
-    </script>
+    </script> -->
 
     <script type="text/javascript">
       // Client ID and API key from the Developer Console
@@ -197,7 +200,8 @@
         main_form.addEventListener('submit', function(event) {
           event.preventDefault();
           document.getElementById("submit").disabled = true;
-          getTripcode();
+          //uncomment next line for tournament mode.
+          //getTripcode();
         }, false);
       }
 
@@ -253,7 +257,8 @@
               document.getElementById('timededuction').textContent = timeDeduction;
               document.getElementById('netscore').textContent = netScore;
 
-              saveToFirebase(username, score, totalTime, timeDeduction, netScore, wronganswers, tripcode);
+              //Uncomment the next line to store scores to Firebase. (Tournament mode.)
+              //saveToFirebase(username, score, totalTime, timeDeduction, netScore, wronganswers, tripcode);
               showResults();
 
             } else {
