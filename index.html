@@ -233,13 +233,14 @@
 
                 var c2l = correct.toLowerCase();
                 var r2l = response.toLowerCase();
+                console.log("correct: " + c2l + ", response: " + r2l);
 
                 if (c2l == r2l) {
                   verdict = "Correct!";
                   verdictSpan.className += " correctverdict"
                   score = score + 5;
                 } else {
-                  verdict = "Incorrect, the answer was " + c2l + " and you provided "+r2l+".";
+                  verdict = "Incorrect, the answer was " + c2l + " and you provided "+ r2l +".";
                   verdictSpan.className += " incorrectverdict"
                   wrong.push(j);
                 }
