@@ -218,9 +218,9 @@
           }).then(function(response) {
             var range = response.result.valueRanges[0].values;
             if (range.length > 0) {
-              //console.log(range[0]);
+              console.log(range[0]);
               var submittedAnswers = getFormResults(document.getElementById('questions'));
-              //console.log(submittedAnswers[1]);
+              console.log(submittedAnswers[1]);
               var verdict;
               var score = 0;
               var wrong = [];
