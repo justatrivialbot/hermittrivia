@@ -213,7 +213,7 @@
           console.log(tripcode);
           gapi.client.sheets.spreadsheets.values.batchGet({
             spreadsheetId: '1LYrTuVdXD1E20CI5tQ9vSU4OHlEAPBaNdnoaCL_t7JQ',
-            ranges: 'Q1!D2:D11',
+            ranges: 'Q2!D2:D11',
             valueRenderOption: 'FORMATTED_VALUE',
             dateTimeRenderOption: 'FORMATTED_STRING'
           }).then(function(response) {
