@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Hermitcraft Trivia Week 2</title>
+    <title>Hermitcraft Trivia Week 3</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
@@ -12,9 +12,11 @@
   <body>
     <H1>Hermitcraft Trivia Quiz</h1>
     <div class="wrapper">
-    <h2>Week 2: Name that Tune</h2>
+    <h2>Week 3: Legitimate Businesses</h2>
 
     <p>Answer the 10 questions below.</p>
+    <p>Question order is randomized.</p>
+    <p>Correct answers earn 5 points each. You get 30 seconds per question, after which 2 points are deducted per second from your total score.</p>
     <!--Removed until FITB method repaired.
     <p>If a Hermit name is required, use their full name. (e.g., GoodTimesWithScar instead of Scar)</p>
     <p>Capitalization should not matter. <strong>IOS users, do not use Predictive Text</strong></p>
@@ -162,7 +164,7 @@
       function listQuestions() {
         gapi.client.sheets.spreadsheets.values.batchGet({
           spreadsheetId: '1LYrTuVdXD1E20CI5tQ9vSU4OHlEAPBaNdnoaCL_t7JQ',
-          ranges: 'Q2!A2:E11',
+          ranges: 'Q3!A2:E11',
           valueRenderOption: 'FORMATTED_VALUE',
           dateTimeRenderOption: 'FORMATTED_STRING'
         }).then(function(response) {
@@ -217,7 +219,7 @@
           console.log(tripcode);
           gapi.client.sheets.spreadsheets.values.batchGet({
             spreadsheetId: '1LYrTuVdXD1E20CI5tQ9vSU4OHlEAPBaNdnoaCL_t7JQ',
-            ranges: 'Q2!D2:D11',
+            ranges: 'Q3!D2:D11',
             valueRenderOption: 'FORMATTED_VALUE',
             dateTimeRenderOption: 'FORMATTED_STRING'
           }).then(function(response) {
